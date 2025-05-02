@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Erik Jansson</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+</head>
+
+<body>
+  <div id="hero">
+    <div class="main-grid-container">
+      <div class="main-header"><h1>Erik Jansson</h1></div>
+      <div class="main-image">
+        <img src="./erik.png">
+        <div class="main-links">
+          <a class="email" href="mailto:erikjans@chalmers.se" title="Email me">
+            <i class="ri-mail-line ri-2x"></i>
+          </a>
+          <a href="https://github.com/erik-grennberg-jansson"><i class="ri-github-fill ri-2x" title="github"></i></a>
+          <a href="https://orcid.org/0000-0001-8142-6625"><i class="ai ai-orcid ai-2x" title="orcid"></i></a>
+          <a href="https://arxiv.org/a/jansson_e_1.html"><i class="ai ai-arxiv ai-2x" title="arxiv"></i></a>
+          <a href="https://scholar.google.com/citations?user=1e1jvw8AAAAJ&hl=sv"><i class="ai ai-google-scholar ai-2x" title="google scholar"></i></a>
+        </div>
+        <ul>
+          <li><a href="index.html" class="active">About me</a></li>
+          <li><a href="publications.html">Publications</a></li>
+          <li><a href="presentations.html">Presentations</a></li>
+          <li><a href="cv.html">CV</a></li>
+        </ul>
+      </div>
+
+      <div class="main-body">
+        <hr>
+        <div>
+          <p>
+            I am a PhD student under the supervision of
+            <a href="https://klasmodin.github.io/">Klas Modin</a> and <a href="https://www.math.chalmers.se/~langa/">Annika Lang</a>
+            at the
+            <a href="https://www.chalmers.se/en/departments/mv/">Dept. of Mathematical Sciences at Chalmers University of Technology</a>.
+          </p>
+          <p>
+            I have broad interests, and are particularly interested in problems in the intersection of numerical analysis, stochastics and geometry.
+            Application-wise, this has led me to work with for instance stochastic partial differential equations on manifolds, shape analysis applied to protein imaging and structure-preserving numerics. 
+          </p>
+          <p>
+            Feel free to reach out if you have any questions or would like to talk some math!
+          </p>
+        </div>
+        
+        <!-- News Section -->
+        <h2>What's new</h2>
+        <p>Stay up-to-date with my latest research developments, publications, and news.</p>
+        <div id="news-section" class="news-container"></div>
+        
+        <!-- Simplified Contact Information -->
+        <div class="contact-compact">
+          <h3>Contact Information</h3>
+          <div class="contact-grid">
+            <div class="contact-item">
+              <i class="ri-mail-line"></i>
+              <span>erikjans@chalmers.se</span>
+            </div>
+            <div class="contact-item">
+              <i class="ri-map-pin-line"></i>
+              <span>Office: L3048, Dept. of Mathematical Sciences, Chalmers University of Technology</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <p>  Copyright Erik Jansson 2025 | Last updated: May 2025</p>
+      </div>
+    </footer>
+  </div>
+
+  <script id="news-loader">
+    function loadNews() {
+      fetch('news.json')
+        .then(response => response.json())
+        .then(newsData => {
+          const container = document.getElementById('news-section');
+          
+          // Clear existing content
+          container.innerHTML = '';
+    
+          const previewCount = 3;
+          const showMoreBtn = document.createElement('button');
+          showMoreBtn.textContent = 'Show all news';
+          showMoreBtn.style = `
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 0.5rem;
+          `;
+    
+          newsData.forEach((item, index) => {
+            const newsItem = document.createElement('div');
+            newsItem.classList.add('news-item');
+            newsItem.innerHTML = `
+              <h3>${item.title}</h3>
+              <p><small>${item.date}</small></p>
+              <p>${item.content}</p>
+            `;
+            if (index >= previewCount) {
+              newsItem.style.display = 'none';
+              newsItem.classList.add('hidden-news');
+            }
+            container.appendChild(newsItem);
+          });
+    
+          if (newsData.length > previewCount) {
+            container.appendChild(showMoreBtn);
+    
+            showMoreBtn.addEventListener('click', () => {
+              document.querySelectorAll('.hidden-news').forEach(el => {
+                el.style.display = 'block';
+              });
+              showMoreBtn.style.display = 'none';
+            });
+          }
+        })
+        .catch(err => {
+          console.error('Error loading news:', err);
+        });
+    }
+    
+    // Load news on initial page load
+    document.addEventListener('DOMContentLoaded', loadNews);
+    
+    // Create a custom event for page navigation
+    document.addEventListener('pageLoaded', function(e) {
+      if (e.detail && e.detail.page === 'index.html') {
+        loadNews();
+      }
+    });
+  </script>
+  
+  <script src="navigation.js"></script>
+</body>
+</html>

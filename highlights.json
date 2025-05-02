@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Publication 1 Title",
+    "url": "https://arxiv.org/abs/1234567",
+    "image": "./france.JPG",
+    "abstract": "This publication investigates the use of stochastic differential equations in complex systems. The abstract gives more details about the numerical methods applied."
+  },
+  {
+    "title": "Publication 2 Title",
+    "url": "https://arxiv.org/abs/2345678",
+    "image": "./france.JPG",
+    "abstract": "This study focuses on structure-preserving numerics and its application in protein modeling. The abstract explains the methods in greater detail."
+  },
+  {
+    "title": "Publication 3 Title",
+    "url": "https://arxiv.org/abs/3456789",
+    "image": "./france.JPG",
+    "abstract": "This paper delves into the geometry of complex shapes and its impact on computational algorithms. Read the abstract for a deeper dive into the methodology."
+  }
+]

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Erik Jansson</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link href="style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+      </head>
+      
+      <body>
+        <div id="hero">
+          <div class="main-grid-container">
+            <div class="main-header"><h1>Erik Jansson</h1></div>
+            <div class="main-image">
+              <img src="./erik.png">
+              <div class="main-links">
+                <a class="email" href="mailto:erikjans@chalmers.se" title="Email me">
+                  <i class="ri-mail-line ri-2x"></i>
+                </a>
+                <a href="https://github.com/erik-grennberg-jansson"><i class="ri-github-fill ri-2x" title="github"></i></a>
+                <a href="https://orcid.org/0000-0001-8142-6625"><i class="ai ai-orcid ai-2x" title="orcid"></i></a>
+                <a href="https://arxiv.org/a/jansson_e_1.html"><i class="ai ai-arxiv ai-2x" title="arxiv"></i></a>
+                <a href="https://scholar.google.com/citations?user=1e1jvw8AAAAJ&hl=sv"><i class="ai ai-google-scholar ai-2x" title="google scholar"></i></a>
+              </div>
+              <ul>
+                <li><a href="index.html" >About me</a></li>
+                <li><a href="research.html">Research interests</a></li>
+                <li><a href="publications.html">Publications</a></li>
+                <li><a href="presentations.html" class="active">Presentations</a></li>
+                <li><a href="cv.html">CV</a></li>
+              </ul>
+            </div>
+
+            <div class="main-body">
+                <hr>
+                <div>
+                    <p>
+                        Here I have collected some of my most recent presentations and slides.
+                        I like to use the tool <a href="https://www.slides.com/erikjansson" target="_blank">slides.com</a> to create my slides.
+                    </p>
+                </div>
+
+                <!-- Presentation Thumbnails Section -->
+                <div class="presentation-gallery">
+                    <h2>Recent Presentations</h2>
+
+                    <!-- JavaScript will populate this section -->
+                    <div id="presentation-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to fetch and display the latest three presentations -->
+    <script>
+        fetch('presentations.json')
+        .then(response => response.json())
+        .then(data => {
+            // Sort by date (assuming the date format is YYYY-MM-DD)
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Get the latest 3 presentations
+            const latestPresentations = data.slice(0, 3);
+
+            // Get the container where presentations will be displayed
+            const presentationListContainer = document.getElementById('presentation-list');
+
+            // Loop through and display each presentation
+            latestPresentations.forEach(presentation => {
+                const presentationItem = document.createElement('div');
+                presentationItem.classList.add('presentation-item');
+                
+                // Create the iframe for embedding using the full embed URL from the JSON
+                const iframe = document.createElement('iframe');
+                iframe.src = presentation.embed_link; // Embed URL directly from JSON
+                iframe.width = "576";
+                iframe.height = "420";
+                iframe.title = presentation.title;
+                iframe.scrolling = "no";
+                iframe.frameBorder = "0";
+                iframe.webkitallowfullscreen = true;
+                iframe.mozallowfullscreen = true;
+                iframe.allowFullscreen = true;
+                
+                // Create the details section
+                const details = document.createElement('div');
+                details.classList.add('presentation-details');
+                
+                const title = document.createElement('h3');
+                const link = document.createElement('a');
+                link.href = presentation.embed_link; // Link to the full presentation page
+                link.target = "_blank";
+                link.textContent = presentation.title;
+                title.appendChild(link);
+                
+                const description = document.createElement('p');
+                description.textContent = `${presentation.location} | ${presentation.date}`;
+                
+                details.appendChild(title);
+                details.appendChild(description);
+                
+                // Append iframe and details to the item
+                presentationItem.appendChild(iframe);
+                presentationItem.appendChild(details);
+                
+                // Append the item to the list container
+                presentationListContainer.appendChild(presentationItem);
+            });
+        })
+        .catch(error => console.error('Error loading presentations:', error));
+    </script>
+    <script src="navigation.js"></script>
+</body>
+</html>

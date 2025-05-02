@@ -1,0 +1,23 @@
+[
+  {
+    "title": "New paper on spin systems",
+    "date": "May 2, 2025",
+    "content": "My paper together with Sagy Ephrati on symplectic integrators for spin systems is now published in Physical Review E. <a href=\"https://journals.aps.org/pre/abstract/10.1103/PhysRevE.111.054201\">Read it here!</a>"
+  },
+    {
+      "title": "Thesis is live but not yet defended",
+      "date": "April 25, 2025",
+      "content": "My PhD thesis is now available online at <a href = \"https://research.chalmers.se/publication/545974\">  Chalmers publication database </a>. The defense is scheduled for May 16, 2025"
+    },
+    {
+        "title": "New publication",
+        "date": "April 25 2025",
+        "content": "My work on intepretable neural networks for permeability prediction is now published in Physical Review E. Thanks to Magnus Röding for the collaboration. <a href=\"https://doi.org/10.1103/physreve.111.045509\">Read it here!</a>"
+      },
+    {
+      "title": "New preprint",
+      "date": "April 16 2025",
+      "content": "My work on a device that can create non-reversible rejection-free samplers is <a href=\"https://arxiv.org/abs/2504.12190\">now available on ArXiv</a>. Fantastic collaboration with Moritz, Ruben and Akash."
+    }
+  
+  ]

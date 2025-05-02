@@ -1,0 +1,724 @@
+html, body {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    color: #2e6a1f; /* Dark greenish-brown for text */
+    height: 100%;
+    background-color: #a4ae9d; /* Soft muted green */
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  #hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  
+  a:link, a:visited {
+    color: #555; /* Neutral gray for links */
+  }
+  
+  a:hover {
+    color: #333; /* Darker gray for hover effect */
+  }
+  
+  .main-links a:hover {
+    color: #333; /* Darker gray on hover */
+  }
+  
+  .main-grid-container {
+    display: grid;
+    grid-template-columns: 13rem 2fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+      ". main-header" 
+      "main-image main-body";
+    max-width: 960px;
+    margin: auto;
+    padding: 2.5rem 0;
+    column-gap: 2.5rem;
+    flex: 1;
+  }
+  
+  @media only screen and (max-width:720px) {
+    .main-grid-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas: 
+        "main-header" 
+        "main-image" 
+        "main-body";
+      padding: 1rem;
+    }
+  }
+  
+  .main-image { grid-area: main-image; }
+  .main-header { grid-area: main-header; }
+  .main-body {
+    grid-area: main-body;
+    text-align: justify;
+    padding: 1rem;
+    font-size: 18px; /* Increase font size for bio text */
+    color: #2b3a29; /* Darker greenish-gray for more contrast */
+  }
+  
+  .main-body p {
+    margin: 0 0 .5rem 0;
+  }
+  
+  .main-body h2 {
+    margin: 2rem 0 .5rem 0;
+    color: #458728; /* Fresh green */
+    text-align: left;
+    font-size: 2rem; /* Larger font for better emphasis */
+    font-weight: 300;
+  }
+  
+  .main-header h1 {
+    color: #458728; /* Green for main header */
+    font-weight: 300;
+    font-family: 'Muli', sans-serif;
+    font-size: 3rem;
+    margin: 0 0 1rem 0;
+    display: inline-block;
+  }
+  
+  .main-image img {
+    width: 12.5rem;
+    border: 1px solid #458728;
+    border-radius: 8.25rem;
+  }
+  
+  .news-item {
+    padding: 1.25rem;
+    border-left: 4px solid #458728; /* Soft green border */
+    margin-bottom: 1rem;
+    background: #f0f2e3;
+    transition: all 0.3s ease;
+    border-radius: 1rem; /* Round the edges of each individual news item */
+  }
+  
+  .news-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .news-item h3 {
+    margin: 0;
+    color: #2e6a1f; /* Dark greenish-brown for the title */
+    font-size: 1.5rem;
+    font-weight: 500; /* Slightly bolder */
+  }
+  
+  .news-item small {
+    color: #777; /* Light gray for dates */
+    font-size: 0.9rem;
+  }
+  
+  .news-item p {
+    margin: 0.5rem 0 0;
+  }
+  
+  .project {
+    background-color: #f0f2e3; /* Light muted background */
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+  }
+  
+  .project:hover {
+    transform: translateY(-2px);
+  }
+  
+  .project-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 1rem auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project h2 {
+    color: #458728;
+    margin-bottom: 0.5rem;
+  }
+  
+  .project p {
+    margin-top: 0;
+  }
+  
+ 
+  
+  ul {
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  ul li {
+    margin: 5px 0;
+  }
+  
+  /* Highlighted Publications */
+
+  
+  
+  /* Regular Publications */
+  .publications-section {
+    margin-top: 30px;
+
+  }
+  
+  .publications-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .publications-section ul {
+    padding-left: 20px;
+  }
+  
+  .publications-section li {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  /* Active navigation link */
+  .main-image ul li a.active {
+    color: #458728; /* Green color for active link */
+    font-weight: 500;
+    position: relative;
+  }
+  
+  .main-image ul li a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #458728;
+  }
+  
+  /* Publications styling */
+
+  .action-btn, .pub-link {
+    background-color: #458728;
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .action-btn:hover, .pub-link:hover {
+    background-color: #2e6a1f;
+  }
+  
+ 
+  
+  .publication-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f0f2e3;
+    border-radius: 0.5rem;
+    border-left: 4px solid #458728;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .publication-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pub-links {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .pub-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  
+  .arxiv-link {
+    background-color: #B31B1B;
+  }
+  
+  .doi-link {
+    background-color: #0366d6;
+  }
+  
+  .bibtex-btn {
+    background-color: #6c757d;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .bibtex-content {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  
+  /* Footer styling - Updated to stick to bottom */
+  footer {
+    margin-top: auto;
+    padding: 0rem 0;
+    background-color: #f0f2e3;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #2e6a1f;
+    border-top: 1px solid #ddd;
+    width: 100%;
+  }
+  
+  .footer-content {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  
+  /* CV page styling */
+  .cv-download {
+    display: inline-block;
+    margin: 1rem 0;
+    padding: 0.75rem 1.25rem;
+    background-color: #458728;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .cv-download:hover {
+    background-color: #2e6a1f;
+  }
+  
+  .cv-download i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Contact information styling - Updated for more lightweight design */
+  .contact-info {
+    background-color: #f0f2e3;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    margin-top: 2rem;
+    border-left: 4px solid #458728;
+  }
+  
+  .contact-info h3 {
+    margin-top: 0;
+    color: #458728;
+  }
+  
+  .contact-info p {
+    margin: 0.5rem 0;
+  }
+  
+  .contact-info i {
+    width: 1.5rem;
+    text-align: center;
+    margin-right: 0.5rem;
+    color: #458728;
+  }
+  
+  /* New compact contact styling */
+  .contact-compact {
+    margin-top: 0rem
+  }
+  
+  .contact-compact h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: #458728;
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+  
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+  }
+  
+  .contact-item i {
+    color: #458728;
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    width: 1.5rem;
+    text-align: center;
+  }
+  
+  .contact-item span {
+    font-size: 0.95rem;
+  }
+  
+  /* CV Page Styling */
+  .cv-section {
+    margin-bottom: 2rem;
+  }
+  
+  .cv-item {
+    display: flex;
+    margin-bottom: 1.5rem;
+    background-color: #f0f2e3;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border-left: 4px solid #458728;
+  }
+  
+  .cv-date {
+    min-width: 8rem;
+    color: #458728;
+    font-weight: 500;
+    padding-right: 1rem;
+  }
+  
+  .cv-content {
+    flex: 1;
+  }
+  
+  .cv-content h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2e6a1f;
+  }
+  
+  .cv-content p {
+    margin: 0.25rem 0;
+  }
+  
+  /* Presentation gallery styling */
+  .presentation-gallery {
+    margin-top: 2rem;
+  }
+  
+  .presentation-item {
+    margin-bottom: 2.5rem;
+  }
+  
+  
+  
+  .presentation-item iframe {
+    display: block;
+    max-width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
+  
+  .presentation-details h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+    font-size: 1.3rem;
+    color: #2e6a1f;
+  }
+  
+  .presentation-details p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 720px) {
+    .cv-item {
+      flex-direction: column;
+    }
+    
+    .cv-date {
+      margin-bottom: 0.5rem;
+    }
+    
+    .presentation-item iframe {
+      height: 250px;
+    }
+  }
+
+
+  /* Publication list */
+.pub-list {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Individual publication item */
+  .publication-item {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    background-color: #fafafa;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .publication-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Citation text */
+  .citation {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #111;
+  }
+  
+  /* BibTeX block */
+  .bibtex-content {
+    background: #722323;
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    margin-top: 12px;
+    overflow-x: auto;
+    color: #333;
+  }
+  
+  /* Publication links */
+  .pub-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+  }
+  
+  .pub-link,
+  .pub-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #eaeaea;
+    color: #222;
+    text-decoration: none;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .pub-link:hover,
+  .pub-links a:hover {
+    background-color: #dcdcdc;
+  }
+  
+  .pub-links i {
+    font-size: 1rem;
+  }
+  
+  /* Section headers */
+  .publications-section h2 {
+    font-size: 1.4rem;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 4px;
+  }
+
+  .bibtex-content {
+    position: relative;
+    background-color: #f5f5f5;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: #2c2c2c;
+    padding: 14px 16px;
+    border-left: 4px solid #007acc;
+    border-radius: 6px;
+    margin-top: 12px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+
+   /* Additional styling to enhance the look */
+   .publication-item {
+    border: none;
+    border-left: 3px solid #458728;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+    background-color: #f0f2e3;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  
+  .publication-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .citation {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: #2b3a29;
+  }
+  
+  .pub-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 14px;
+  }
+  
+  .pub-link {
+all: unset; /* resets default button styling */
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background-color: rgba(69, 135, 40, 0.12);
+color: #2e6a1f;
+text-decoration: none;
+border: none;
+padding: 8px 14px;
+border-radius: 6px;
+font-size: 0.85rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.pub-link:hover {
+background-color: rgba(69, 135, 40, 0.2);
+transform: translateY(-1px);
+}
+  
+  .bibtex-content {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: #333;
+    padding: 16px 18px;
+    border-radius: 6px;
+    margin-top: 16px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    border-left: 3px solid rgba(69, 135, 40, 0.5);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .bibtex-copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(69, 135, 40, 0.8);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .bibtex-copy-btn:hover {
+    background-color: rgba(46, 106, 31, 0.9);
+  }
+  
+  .main-body .publications-section h2 {
+    color: #458728;
+    font-size: 1.7rem;
+    margin: 2rem 0 1.5rem 0;
+    font-weight: 400;
+    position: relative;
+    padding-bottom: 0.5rem;
+    text-align: left;
+  }
+  
+  .main-body .publications-section h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background-color: #458728;
+    border-radius: 2px;
+  }
+  
+  .loading {
+    font-style: italic;
+    color: #777;
+    margin: 1rem 0;
+  }
+  
+  .no-publications {
+    font-style: italic;
+    color: #666;
+    background-color: rgba(240, 242, 227, 0.7);
+    padding: 1rem;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  /* Animation for loading state */
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+  
+  .loading {
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Make page more responsive */
+  @media only screen and (max-width: 768px) {
+    .main-body {
+      padding: 0.5rem;
+    }
+    
+    .publication-item {
+      padding: 16px 18px;
+    }
+    
+    .pub-links {
+      gap: 8px;
+    }
+  }
+
+  .pub-links a[href*="arxiv.org"] {
+background-color: rgba(180, 0, 0, 0.15);
+color: #b00000;
+}
+
+.pub-links a[href*="arxiv.org"]:hover {
+background-color: rgba(180, 0, 0, 0.25);
+}
