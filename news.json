@@ -1,5 +1,10 @@
 [
   {
+    "title": "PhD!",
+    "date": "May 16, 2025",
+    "content": "My thesis is defended and my PhD is completed. Thanks to my supervisors and to the committee"
+  },
+  {
     "title": "New paper on spin systems",
     "date": "May 2, 2025",
     "content": "My paper together with Sagy Ephrati on symplectic integrators for spin systems is now published in Physical Review E. <a href=\"https://journals.aps.org/pre/abstract/10.1103/PhysRevE.111.054201\">Read it here!</a>"
