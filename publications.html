@@ -62,252 +62,262 @@
   </div>
   <script src="navigation.js"></script>
   <script>
-    class BibtexParser {
-      static parse(bibtexText) {
-        const entries = [];
+class BibtexParser {
+  static parse(bibtexText) {
+    const entries = [];
+    
+    if (!bibtexText || bibtexText.trim() === '') {
+      console.log('Empty BibTeX input');
+      return entries;
+    }
+    
+    try {
+      const cleanText = bibtexText
+        .replace(/\r\n/g, '\n')   
+        .replace(/\n\s+/g, ' ');  
+      
+      // regex misery
+      const entryPattern = /@(\w+)\s*\{\s*([^,]*),([\s\S]*?)(?=@\w|\s*$)/g;
+      let match;
+      
+      while ((match = entryPattern.exec(bibtexText))) {
+        const entryType = match[1].toLowerCase();
+        const citationKey = match[2].trim();
+        const entryContent = match[3].trim();
         
-        if (!bibtexText || bibtexText.trim() === '') {
-          console.log('Empty BibTeX input');
-          return entries;
-        }
+        const entryTags = {};
         
-        try {
-          const cleanText = bibtexText
-            .replace(/\r\n/g, '\n')   
-            .replace(/\n\s+/g, ' ');  
+        const fieldPattern = /(\w+)\s*=\s*(?:\{((?:[^{}]|(?:\{[^{}]*\}))*)\}|"([^"]*)")/g;
+        let fieldMatch;
+        
+        const processedContent = entryContent
+          .replace(/\s+/g, ' ')  
+          .replace(/,\s*(\w+)\s*=/g, '\n$1=');  
           
-          // regex misery
-          const entryPattern = /@(\w+)\s*\{\s*([^,]*),([\s\S]*?)(?=@\w|\s*$)/g;
-          let match;
-          
-          while ((match = entryPattern.exec(bibtexText))) {
-            const entryType = match[1].toLowerCase();
-            const citationKey = match[2].trim();
-            const entryContent = match[3].trim();
+        const fieldLines = processedContent.split('\n');
+        for (const line of fieldLines) {
+          const fieldMatch = line.match(/(\w+)\s*=\s*(?:\{((?:[^{}]|(?:\{[^{}]*\}))*)\}|"([^"]*)")/);
+          if (fieldMatch) {
+            const fieldName = fieldMatch[1].toLowerCase();
+            const fieldValue = fieldMatch[2] !== undefined ? fieldMatch[2] : fieldMatch[3];
             
-            const entryTags = {};
-            
-            const fieldPattern = /(\w+)\s*=\s*(?:\{((?:[^{}]|(?:\{[^{}]*\}))*)\}|"([^"]*)")/g;
-            let fieldMatch;
-            
-            const processedContent = entryContent
-              .replace(/\s+/g, ' ')  
-              .replace(/,\s*(\w+)\s*=/g, '\n$1=');  
-              
-            const fieldLines = processedContent.split('\n');
-            for (const line of fieldLines) {
-              const fieldMatch = line.match(/(\w+)\s*=\s*(?:\{((?:[^{}]|(?:\{[^{}]*\}))*)\}|"([^"]*)")/);
-              if (fieldMatch) {
-                const fieldName = fieldMatch[1].toLowerCase();
-                const fieldValue = fieldMatch[2] !== undefined ? fieldMatch[2] : fieldMatch[3];
-                
-                if (fieldValue !== undefined) {
-                  entryTags[fieldName] = fieldValue.trim();
-                }
-              }
+            if (fieldValue !== undefined) {
+              entryTags[fieldName] = fieldValue.trim();
             }
-            
-            entries.push({
-              entryType,
-              citationKey,
-              entryTags
-            });
           }
-          
-          console.log(`Successfully parsed ${entries.length} BibTeX entries`);
-        } catch (error) {
-          console.error('Error parsing BibTeX:', error);
         }
         
-        return entries;
+        entries.push({
+          entryType,
+          citationKey,
+          entryTags
+        });
       }
-    }
-
-    function formatAuthors(authorString) {
-      if (!authorString) return '';
       
-      const authors = authorString.split(' and ');
-      if (authors.length > 3) {
-        //return authors[0] + ' et al.'; //uncomment to use "et al." for more than 3 authors
-        authors.join(', ');
-      }
-      return authors.join(', ');
+      console.log(`Successfully parsed ${entries.length} BibTeX entries`);
+    } catch (error) {
+      console.error('Error parsing BibTeX:', error);
+    }
+    
+    return entries;
+  }
+}
+
+function formatAuthors(authorString) {
+  if (!authorString) return '';
+  
+  // Split by "and" to get individual authors
+  const authors = authorString.split(' and ');
+  
+  // Transform each author from "Lastname, Firstname" to "Firstname Lastname"
+  const formattedAuthors = authors.map(author => {
+    // Check if the author name contains a comma (indicating "Lastname, Firstname" format)
+    if (author.includes(',')) {
+      const [lastName, firstName] = author.split(',').map(part => part.trim());
+      return `${firstName} ${lastName}`;
+    }
+    // If no comma, return the name as is (might already be in the desired format)
+    return author.trim();
+  });
+  
+  // Join all authors with commas
+  return formattedAuthors.join(', ');
+}
+
+function createCitation(entry) {
+  try {
+    const authors = formatAuthors(entry.entryTags.author || "");
+    const title = entry.entryTags.title ? `"${entry.entryTags.title}"` : "";
+    const journal = entry.entryTags.journal || entry.entryTags.booktitle || "";
+    const volume = entry.entryTags.volume ? `, vol. ${entry.entryTags.volume}` : "";
+    const number = entry.entryTags.number ? `, no. ${entry.entryTags.number}` : "";
+    const pages = entry.entryTags.pages ? `, pp. ${entry.entryTags.pages}` : "";
+    const year = entry.entryTags.year ? `, ${entry.entryTags.year}` : "";
+    
+    return `${authors}, ${title}${journal ? ` in ${journal}${volume}${number}${pages}` : ""}${year}.`;
+  } catch (error) {
+    console.error('Error creating citation:', error);
+    return 'Error formatting citation';
+  }
+}
+
+function createPublicationItem(entry, sectionId) {
+  try {
+    const container = document.createElement("div");
+    container.classList.add("publication-item");
+
+    const citation = document.createElement("div");
+    citation.classList.add("citation");
+    citation.textContent = createCitation(entry);
+    container.appendChild(citation);
+
+    const links = document.createElement("div");
+    links.classList.add("pub-links");
+
+    if (entry.entryTags.doi) {
+      const doiLink = document.createElement("a");
+      doiLink.href = `https://doi.org/${entry.entryTags.doi}`;
+      doiLink.target = "_blank";
+      doiLink.innerHTML = '<i class="ai ai-doi"></i> DOI';
+      doiLink.classList.add("pub-link");
+      links.appendChild(doiLink);
+    }
+    
+    if (entry.entryTags.arxiv) {
+      const arxivLink = document.createElement("a");
+      arxivLink.href = `https://arxiv.org/abs/${entry.entryTags.arxiv}`;
+      arxivLink.target = "_blank";
+      arxivLink.innerHTML = '<i class="ai ai-arxiv"></i> arXiv';
+      arxivLink.classList.add("pub-link");
+      links.appendChild(arxivLink);
+    }
+    
+    if (entry.entryTags.url) {
+      const urlLink = document.createElement("a");
+      urlLink.href = entry.entryTags.url;
+      urlLink.target = "_blank";
+      urlLink.innerHTML = '<i class="ri-external-link-line"></i> Link';
+      urlLink.classList.add("pub-link");
+      links.appendChild(urlLink);
     }
 
-    function createCitation(entry) {
-      try {
-        const authors = formatAuthors(entry.entryTags.author || "");
-        const title = entry.entryTags.title ? `"${entry.entryTags.title}"` : "";
-        const journal = entry.entryTags.journal || entry.entryTags.booktitle || "";
-        const volume = entry.entryTags.volume ? `, vol. ${entry.entryTags.volume}` : "";
-        const number = entry.entryTags.number ? `, no. ${entry.entryTags.number}` : "";
-        const pages = entry.entryTags.pages ? `, pp. ${entry.entryTags.pages}` : "";
-        const year = entry.entryTags.year ? `, ${entry.entryTags.year}` : "";
-        
-        return `${authors}, ${title}${journal ? ` in ${journal}${volume}${number}${pages}` : ""}${year}.`;
-      } catch (error) {
-        console.error('Error creating citation:', error);
-        return 'Error formatting citation';
-      }
-    }
+    const bibBtn = document.createElement("button");
+    bibBtn.textContent = "BibTeX";
+    bibBtn.classList.add("pub-link");
+    bibBtn.onclick = () => {
+      if (container.querySelector(".bibtex-content")) {
+        container.querySelector(".bibtex-content").remove();
+      } else {
+        const bibBlock = document.createElement("pre");
+        bibBlock.classList.add("bibtex-content");
+        const bibText = `@${entry.entryType}{${entry.citationKey},\n` +
+          Object.entries(entry.entryTags)
+            .map(([key, val]) => `  ${key} = {${val}}`)
+            .join(",\n") +
+          `\n}`;
+        bibBlock.textContent = bibText;
 
-    function createPublicationItem(entry, sectionId) {
-      try {
-        const container = document.createElement("div");
-        container.classList.add("publication-item");
-
-        const citation = document.createElement("div");
-        citation.classList.add("citation");
-        citation.textContent = createCitation(entry);
-        container.appendChild(citation);
-
-        const links = document.createElement("div");
-        links.classList.add("pub-links");
-
-        if (entry.entryTags.doi) {
-          const doiLink = document.createElement("a");
-          doiLink.href = `https://doi.org/${entry.entryTags.doi}`;
-          doiLink.target = "_blank";
-          doiLink.innerHTML = '<i class="ai ai-doi"></i> DOI';
-          doiLink.classList.add("pub-link");
-          links.appendChild(doiLink);
-        }
-        
-        if (entry.entryTags.arxiv) {
-          const arxivLink = document.createElement("a");
-          arxivLink.href = `https://arxiv.org/abs/${entry.entryTags.arxiv}`;
-          arxivLink.target = "_blank";
-          arxivLink.innerHTML = '<i class="ai ai-arxiv"></i> arXiv';
-          arxivLink.classList.add("pub-link");
-          links.appendChild(arxivLink);
-        }
-        
-        if (entry.entryTags.url) {
-          const urlLink = document.createElement("a");
-          urlLink.href = entry.entryTags.url;
-          urlLink.target = "_blank";
-          urlLink.innerHTML = '<i class="ri-external-link-line"></i> Link';
-          urlLink.classList.add("pub-link");
-          links.appendChild(urlLink);
-        }
-
-        const bibBtn = document.createElement("button");
-        bibBtn.textContent = "BibTeX";
-        bibBtn.classList.add("pub-link");
-        bibBtn.onclick = () => {
-          if (container.querySelector(".bibtex-content")) {
-            container.querySelector(".bibtex-content").remove();
-          } else {
-            const bibBlock = document.createElement("pre");
-            bibBlock.classList.add("bibtex-content");
-            const bibText = `@${entry.entryType}{${entry.citationKey},\n` +
-              Object.entries(entry.entryTags)
-                .map(([key, val]) => `  ${key} = {${val}}`)
-                .join(",\n") +
-              `\n}`;
-            bibBlock.textContent = bibText;
-
-            const copyBtn = document.createElement("button");
-            copyBtn.classList.add("bibtex-copy-btn");
-            copyBtn.textContent = "Copy";
-            copyBtn.onclick = (e) => {
-              e.stopPropagation();
-              navigator.clipboard.writeText(bibText);
-              copyBtn.textContent = "Copied!";
-              setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
-            };
-            bibBlock.appendChild(copyBtn);
-            container.appendChild(bibBlock);
-          }
+        const copyBtn = document.createElement("button");
+        copyBtn.classList.add("bibtex-copy-btn");
+        copyBtn.textContent = "Copy";
+        copyBtn.onclick = (e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(bibText);
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
         };
-        links.appendChild(bibBtn);
-        container.appendChild(links);
-
-        return container;
-      } catch (error) {
-        console.error('Error creating publication item:', error);
-        const errorEl = document.createElement("div");
-        errorEl.textContent = "Error displaying this publication";
-        return errorEl;
+        bibBlock.appendChild(copyBtn);
+        container.appendChild(bibBlock);
       }
+    };
+    links.appendChild(bibBtn);
+    container.appendChild(links);
+
+    return container;
+  } catch (error) {
+    console.error('Error creating publication item:', error);
+    const errorEl = document.createElement("div");
+    errorEl.textContent = "Error displaying this publication";
+    return errorEl;
+  }
+}
+
+async function loadBibFile(file, sectionId) {
+  console.log(`Loading ${file} for section ${sectionId}...`);
+  const targetList = document.getElementById(`${sectionId}-list`);
+  
+  try {
+    // Clear loading message
+    targetList.innerHTML = '';
+    
+    // Add a cache-busting parameter to prevent browser caching
+    const url = `${file}?v=${new Date().getTime()}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load ${file}: ${response.status} ${response.statusText}`);
     }
+    
+    const text = await response.text();
+    console.log(`Successfully loaded ${file} (${text.length} characters)`);
+    
+    const entries = BibtexParser.parse(text);
+    
+    if (entries.length === 0) {
+      const noPublications = document.createElement("div");
+      noPublications.classList.add("no-publications");
+      noPublications.textContent = "No publications found in this category.";
+      targetList.appendChild(noPublications);
+      return;
+    }
+    
+    const monthOrder = {
+      jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+      jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
+    };
 
-    async function loadBibFile(file, sectionId) {
-      console.log(`Loading ${file} for section ${sectionId}...`);
-      const targetList = document.getElementById(`${sectionId}-list`);
-      
-      try {
-        // Clear loading message
-        targetList.innerHTML = '';
-        
-        // Add a cache-busting parameter to prevent browser caching
-        const url = `${file}?v=${new Date().getTime()}`;
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to load ${file}: ${response.status} ${response.statusText}`);
-        }
-        
-        const text = await response.text();
-        console.log(`Successfully loaded ${file} (${text.length} characters)`);
-        
-        const entries = BibtexParser.parse(text);
-        
-        if (entries.length === 0) {
-          const noPublications = document.createElement("div");
-          noPublications.classList.add("no-publications");
-          noPublications.textContent = "No publications found in this category.";
-          targetList.appendChild(noPublications);
-          return;
-        }
-        
-        const monthOrder = {
-  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
-  jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
-};
+    entries.sort((a, b) => {
+      const yearA = a.entryTags.year ? parseInt(a.entryTags.year) : 0;
+      const yearB = b.entryTags.year ? parseInt(b.entryTags.year) : 0;
+      if (yearA !== yearB) return yearB - yearA;
 
-entries.sort((a, b) => {
-  const yearA = a.entryTags.year ? parseInt(a.entryTags.year) : 0;
-  const yearB = b.entryTags.year ? parseInt(b.entryTags.year) : 0;
-  if (yearA !== yearB) return yearB - yearA;
+      const monthA = monthOrder[(a.entryTags.month || '').toLowerCase().slice(0, 3)] || 0;
+      const monthB = monthOrder[(b.entryTags.month || '').toLowerCase().slice(0, 3)] || 0;
+      return monthB - monthA;
+    });
 
-  const monthA = monthOrder[(a.entryTags.month || '').toLowerCase().slice(0, 3)] || 0;
-  const monthB = monthOrder[(b.entryTags.month || '').toLowerCase().slice(0, 3)] || 0;
-  return monthB - monthA;
+    entries.forEach(entry => {
+      const item = createPublicationItem(entry, sectionId);
+      targetList.appendChild(item);
+    });
+
+  } catch (error) {
+    console.error(`Error loading file ${file}:`, error);
+    targetList.innerHTML = `<div class="no-publications">Error loading publications from ${file}: ${error.message}</div>`;
+  }
+}
+
+// Function to initialize publications loading
+function initPublications() {
+  console.log("Initializing publications loading...");
+  loadBibFile("preprints.bib", "preprints");
+  loadBibFile("publications.bib", "peer-reviewed");
+  loadBibFile("thesis.bib", "theses");
+}
+
+// Listen for both regular page load and SPA navigation
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Publications: DOMContentLoaded fired");
+  initPublications();
 });
 
-        entries.forEach(entry => {
-          const item = createPublicationItem(entry, sectionId);
-          targetList.appendChild(item);
-        });
-
-      } catch (error) {
-        console.error(`Error loading file ${file}:`, error);
-        targetList.innerHTML = `<div class="no-publications">Error loading publications from ${file}: ${error.message}</div>`;
-      }
-    }
-
-    // Function to initialize publications loading
-    function initPublications() {
-      console.log("Initializing publications loading...");
-      loadBibFile("preprints.bib", "preprints");
-      loadBibFile("publications.bib", "peer-reviewed");
-      loadBibFile("thesis.bib", "theses");
-    }
-
-    // Listen for both regular page load and SPA navigation
-    document.addEventListener("DOMContentLoaded", function() {
-      console.log("Publications: DOMContentLoaded fired");
-      initPublications();
-    });
-
-    // Listen for our custom event from navigation.js
-    document.addEventListener("pageScriptsLoaded", function(e) {
-      console.log("Publications: pageScriptsLoaded fired for " + e.detail.page);
-      if (e.detail.page === "publications.html") {
-        initPublications();
-      }
-    });
+// Listen for our custom event from navigation.js
+document.addEventListener("pageScriptsLoaded", function(e) {
+  console.log("Publications: pageScriptsLoaded fired for " + e.detail.page);
+  if (e.detail.page === "publications.html") {
+    initPublications();
+  }
+});
   </script>
 </body>
 </html>
